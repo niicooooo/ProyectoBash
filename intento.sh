@@ -2,33 +2,41 @@
 
 clear
 
-OPTIONS=("1" "2" "3" "4" "5" "6" "7" "-d")
+OPCIONES=("1" "2" "3" "4" "5" "6" "7")
 
-MENU="Bienvenido al menu! \n1)Crear entorno.\n2)Crear proceso.\n3)Mostrar alumnos.\n4)Mostrar notas mas altas.\n5)Messi.\n6)Mostrar log.\n7)Salir."
+MENU="Bienvenido al menu!\n1)Crear entorno.\n2)Crear proceso.\n3)Mostrar alumnos.\n4)Mostrar notas mas altas.\n5)Messi.\n6)Mostrar log.\n7)Salir."
+
+# OPCION 1 --- TERMINADA
+# OPCION 2 --- EN PROCESO
+# OPCION 3 --- PENDIENTE
+# OPCION 4 --- PENDIENTE
+# OPCION 5 --- PENDIENTE
+# OPCION 6 --- PENDIENTE
+# OPCION 7 --- TERMINADA
 
 # PASO 1 - MENU (validar ingreso de opcion correcta) ---- Listo
 # PASO 2 - 
 
-while [ "$valid" != "true" ]
+while [ "$valido" != "true" ]
 do
 
     echo -e $MENU
     echo -n "Ingrese su opcion: "
 
-    read option
+    read opcion
 
-    valid=false
+    valido=false
 
-    for elemento in "${OPTIONS[@]}"
+    for elemento in "${OPCIONES[@]}"
     do
 
-        if [ "$elemento" == "$option" ]; then
-            valid=true
+        if [ "$elemento" == "$opcion" ]; then
+            valido=true
         fi
 
     done
 
-    if [ "$valid" != "true" ]; then
+    if [ "$valido" != "true" ]; then
         clear
         echo "Ingreso una opcion invalida."
         read -p "Presione ENTER para volver al menu..."
@@ -45,16 +53,14 @@ EOF
 
 }
 
-echo $HOME
-
-case $option in 
+case $opcion in 
 
     1)
         if [ ! -d "$HOME/EPNro1" ]; then
             mkdir -p "$HOME/EPNro1/entrada" "$HOME/EPNro1/salida" "$HOME/EPNro1/procesado"
             generar_script
         else
-            echo "Ya estan creadas las carpetas."
+            echo "Entorno ya creado."
         fi
         ;;
     2)
@@ -62,6 +68,17 @@ case $option in
             echo "Entorno no creado. Primero debe correr la opcion 1."
         else
             bash "$HOME/EPNro1/consolidar.sh"
+        fi
+        ;;
+    3)
+        if [ ! -d "$HOME/EPNro1" ]; then
+            echo "Entorno no creado. Primero debe correr la opcion 1."
+        else
+            if [ ! -f "$HOME/EPNro1/salida/FILENAME.txt" ]; then
+                echo "No hay registros todavia."
+            else
+                sort -k1 -n "$HOME/EPNro1/salida/FILENAME.txt"
+            fi
         fi
         ;;
     7)

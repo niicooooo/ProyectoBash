@@ -81,6 +81,17 @@ case $opcion in
             fi
         fi
         ;;
+    4) 
+        if [ ! -d "$HOME/EPNro1" ]; then
+            echo "Entorno no creado. Primero debe correr la opcion 1."
+        else
+            if [ ! -f "$HOME/EPNro1/salida/FILENAME.txt" ]; then
+                echo "No hay registros todavia."
+            else
+                sort -k5 -n -r "$HOME/EPNro1/salida/FILENAME.txt" | head -n 10 
+            fi
+        fi
+        ;;
     7)
         echo "Gracias por usar el menu!";;
 

@@ -6,11 +6,18 @@ OPCIONES=("1" "2" "3" "4" "5" "6" "7")
 
 MENU="Bienvenido al menu!\n1)Crear entorno.\n2)Crear proceso.\n3)Mostrar alumnos.\n4)Mostrar notas mas altas.\n5)Messi.\n6)Mostrar log.\n7)Salir."
 
+BASE="$HOME/EPNro1"
+ENTRADA="$BASE/entrada"
+SALIDA="$BASE/salida"
+PROCESADO="$BASE/procesado"
+FILENAME="$SALIDA/FILENAME.txt"
+CONSOLIDAR="$BASE/consolidar.sh"
+
 # OPCION 1 --- TERMINADA
 # OPCION 2 --- EN PROCESO
-# OPCION 3 --- PENDIENTE
-# OPCION 4 --- PENDIENTE
-# OPCION 5 --- PENDIENTE
+# OPCION 3 --- TERMINADA
+# OPCION 4 --- TERMINADA
+# OPCION 5 --- TERMINADA
 # OPCION 6 --- PENDIENTE
 # OPCION 7 --- TERMINADA
 
@@ -46,7 +53,7 @@ do
 done
 
 generar_script() {
-    cat > "$HOME/EPNro1/consolidar.sh" << EOF
+    cat > "$CONSOLIDAR" << EOF
 #!/bin/bash
 
 EOF
@@ -56,40 +63,53 @@ EOF
 case $opcion in 
 
     1)
-        if [ ! -d "$HOME/EPNro1" ]; then
-            mkdir -p "$HOME/EPNro1/entrada" "$HOME/EPNro1/salida" "$HOME/EPNro1/procesado"
+        if [ ! -d "$BASE" ]; then
+            mkdir -p "$ENTRADA" "$SALIDA" "$PROCESADO"
             generar_script
         else
             echo "Entorno ya creado."
         fi
         ;;
     2)
-        if [ ! -d "$HOME/EPNro1" ]; then
+        if [ ! -d "$BASE" ]; then
             echo "Entorno no creado. Primero debe correr la opcion 1."
         else
-            bash "$HOME/EPNro1/consolidar.sh"
+            bash "$CONSOLIDAR"
         fi
         ;;
     3)
-        if [ ! -d "$HOME/EPNro1" ]; then
+        if [ ! -d "$BASE" ]; then
             echo "Entorno no creado. Primero debe correr la opcion 1."
         else
-            if [ ! -f "$HOME/EPNro1/salida/FILENAME.txt" ]; then
+            if [ ! -f "$FILENAME" ]; then
                 echo "No hay registros todavia."
             else
-                sort -k1 -n "$HOME/EPNro1/salida/FILENAME.txt"
+                sort -k1 -n "$FILENAME"
             fi
         fi
         ;;
     4) 
-        if [ ! -d "$HOME/EPNro1" ]; then
+        if [ ! -d "$BASE" ]; then
             echo "Entorno no creado. Primero debe correr la opcion 1."
         else
-            if [ ! -f "$HOME/EPNro1/salida/FILENAME.txt" ]; then
+            if [ ! -f "$FILENAME" ]; then
                 echo "No hay registros todavia."
             else
-                sort -k5 -n -r "$HOME/EPNro1/salida/FILENAME.txt" | head -n 10 
+                sort -k5 -n -r "$FILENAME" | head -n 10 
             fi
+        fi
+        ;;
+    5)
+        echo -n "Ingrese el NRO de padron: "
+
+        read nro_padron
+
+        resultado=$(awk -v padron=$nro_padron '$1 == padron' "$FILENAME")
+
+        if [ ! -z $resultado ]; then
+            echo $resultado
+        else
+            echo "No se encontraron registros."
         fi
         ;;
     7)

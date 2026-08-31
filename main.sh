@@ -5,7 +5,7 @@ clear
 OPCIONES=("1" "2" "3" "4" "5" "6" "7")
 
 MENU="Bienvenido al menu!\n1)Crear entorno.\n2)Crear proceso.\n3)Mostrar alumnos.\n4)Mostrar notas mas altas.\n5)Buscar alumno por padron.\n6)Mostrar log.\n7)Salir."
-
+# Definimos las rutas q vamos a utilizar
 BASE="$HOME/EPNro1"
 ENTRADA="$BASE/entrada"
 SALIDA="$BASE/salida"
@@ -44,7 +44,7 @@ if [ "$1" == "-d" ]; then
     fi
     exit 0
 fi
-
+# Sirve para verificar que FILENAME esta definida porque se utiliza para determinar el nombre del archivo
 if [ -z "$FILENAME" ]; then
 echo "falta definir la variable ambiente, para arreglarlo usar : export FILENAME=nombre_elegido"
 exit 1
@@ -79,7 +79,7 @@ clear
 fi
 
 done
-
+# Esta funcion genera automaticamente el script consolidar.sh que busca ,procesa y mueve los archivos de entrada
 generar_script() {
     cat > "$CONSOLIDAR" << 'EOF'
 #!/bin/bash
@@ -113,6 +113,7 @@ EOF
 case $opcion in 
 
 1)
+# Crea el entorno con las carpetas de entrada ,salida y procesados y genera un script neceserio para procesar los archivos
 if [ ! -d "$BASE" ]; then
 mkdir -p "$ENTRADA" "$SALIDA" "$PROCESADO"
 generar_script
@@ -122,17 +123,20 @@ echo "Entorno ya creado."
 fi
         ;;
 2)
+#Verifica q exista el entorno y que no haya otro proceso ejecutandose antes de iniciar uno nuevo
 if [ ! -d "$BASE" ]; then
 echo "Entorno no creado. Primero debe correr la opcion 1."
 elif [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
 echo "El proceso ya esta corriendo (PID $(cat "$PIDFILE"))."
 else
+# Ejecutamos consolidar.sh en segundo plano y guardamos su PID para poder comprobar si sigue activo o finalizarlo posteriormente
 nohup bash "$CONSOLIDAR" "$BASE" "$FILENAME" > "$BASE/consolidar.out" 2>&1 &
 echo $! > "$PIDFILE"
 echo "Proceso consolidar.sh corriendo en background (PID $!)."
 fi
         ;;
 3)
+# MUestra los alumnos ordenados por numero de padron a partir de los registros procesados
 if [ ! -d "$BASE" ]; then
 echo "Entorno no creado. Primero debe correr la opcion 1."
 else
@@ -144,6 +148,7 @@ fi
 fi
         ;;
 4) 
+# Ordena los alumnos por nota de mayor o menor y muestra solamente  los 10 mejores 
 if [ ! -d "$BASE" ]; then
 echo "Entorno no creado. Primero debe correr la opcion 1."
 else
@@ -159,6 +164,10 @@ echo -n "Ingrese el NRO de padron: "
 
 read nro_padron
 
+if [ ! -f "$SALIDA_FILE" ]; then
+echo "No hay registros todavia."
+else
+# Usamos awk para buscar un registro comparando el padron ingresado con el primer campo de cada linea del archivo de salida
 resultado=$(awk -v padron="$nro_padron" '$1 == padron' "$SALIDA_FILE")
 
 if [ ! -z "$resultado" ]; then
@@ -168,6 +177,7 @@ echo "No se encontraron registros."
 fi
         ;;
 6)
+#Muestre el registro de los archivos q fueron procesados
 if [ ! -f "$LOGFILE" ]; then
 echo "No existe el log todavia."
 else
@@ -175,6 +185,7 @@ cat "$LOGFILE"
 fi
         ;;
 7)
+#Finaliza el programa
 echo "Gracias por usar el menu!";;
 
 esac

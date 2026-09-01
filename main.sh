@@ -175,6 +175,7 @@ echo "$resultado"
 else
 echo "No se encontraron registros."
 fi
+fi
         ;;
 6)
 #Muestre el registro de los archivos q fueron procesados

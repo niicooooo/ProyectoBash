@@ -95,14 +95,14 @@ LOGFILE="$BASE/procesado.log"
 shopt -s nullglob
 
 while true; do
-       archivos=("$ENTRADA"/*.txt)
-       for archivo in "${archivos[@]}"; do
-            cat "$archivo" >> "$SALIDA_FILE"
-            mv "$archivo" "$PROCESADO"
-            fecha=$(date '+%d/%m/%Y %H:%M:%S')
-            nombre=$(basename "$archivo")
-            echo "$fecha - Procesado archivo $nombre" >> "$LOGFILE"
-done
+    archivos=("$ENTRADA"/*.txt)
+    for archivo in "${archivos[@]}"; do
+        cat "$archivo" >> "$SALIDA_FILE"
+        mv "$archivo" "$PROCESADO"
+        fecha=$(date '+%d/%m/%Y %H:%M:%S')
+        nombre=$(basename "$archivo")
+        echo "$fecha - Procesado archivo $nombre" >> "$LOGFILE"
+    done
     sleep 2
 done
 
